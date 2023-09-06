@@ -77,17 +77,6 @@
                                     </div>
                                 </a>
                             @endforeach
-                            <a href="#" class="list-group-item list-group-item-action rounded-0">
-                              <div class="d-flex w-100 justify-content-between">
-                                <h5 class="mb-1">Task Title</h5>
-                              </div>
-                              <p class="mb-1">Task description. Lorem ipsum, dolor sit amet consectetur adipisicing elit. Veniam possimus tempora quia odio ab nemo! Alias a accusamus earum laboriosam officia autem quisquam optio similique rerum asperiores, quibusdam minus? Magni!</p>                            
-                              <div class="btn-group">
-                                <button type="button" class="btn btn-dark"> <i class="bi-check-square-fill"></i> Completed</button>
-                                <button type="button" class="btn btn-dark"> <i class="bi-pencil-square"></i> Edit</button>
-                                <button type="button" class="btn btn-dark"> <i class="bi-trash-fill"></i> Delete</button>
-                              </div>
-                            </a>
                         </div>
 
                       </div>
