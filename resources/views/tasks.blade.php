@@ -65,17 +65,17 @@
                         
                         <div class="list-group" id="task-list">
                             @foreach($taskData as $task)
-                                <a href="#" class="list-group-item list-group-item-action rounded-0" aria-current="true">
+                                <div  class="list-group-item list-group-item-action rounded-0" aria-current="true">
                                     <div class="d-flex w-100 justify-content-between">
                                     <h5 class="mb-1">{{$task->title}}</h5>
                                     </div>
                                     <p class="mb-1">{{$task->description}}</p>
                                     <div class="btn-group">
-                                    <button type="button" class="btn btn-dark"> <i class="bi-check-square-fill"></i> Completed</button>
-                                    <button type="button" class="btn btn-dark"> <i class="bi-pencil-square"></i> Edit</button>
-                                    <button type="button" class="btn btn-dark"> <i class="bi-trash-fill"></i> Delete</button>
+                                    <button type="button" value="{{$task->id}}" class="btn btn-dark complete-btn"> <i class="bi-check-square-fill"></i> Completed</button>
+                                    <button type="button" value="{{$task->id}}" class="btn btn-dark edit-btn"> <i class="bi-pencil-square"></i> Edit</button>
+                                    <button type="button" value="{{$task->id}}" class="btn btn-dark delete-btn"> <i class="bi-trash-fill"></i> Delete</button>
                                     </div>
-                                </a>
+                                </div>
                             @endforeach
                         </div>
 
@@ -90,11 +90,25 @@
     <script>
         $(document).ready(function() {
 
+            $(".complete-btn").click(function(event) {
+                // updateTaskStatus();
+            });
+
+            $(".edit-btn").click(function(event) {
+                // editTask();
+            });
+
+            $(".delete-btn").click(function(event) {
+                console.log('dsad');
+                deleteTask(event.target.value);
+                event.target.parentNode.parentNode.remove();
+            });
+
             $("#todo-form-btn").click(function(event) {
                 createTask();
             });
-           // Function to create a new task
-        function createTask() {
+            // Function to create a new task
+            function createTask() {
             const title = $('#title').val();
             const description = $('#description').val();
 
@@ -109,17 +123,17 @@
                     success: function (data) {
                         // Handle success, e.g., show a success message or update the task list
                         var taskHtml = `
-                        <a href="#" class="list-group-item list-group-item-action rounded-0" aria-current="true">
-                            <div class="d-flex w-100 justify-content-between">
-                                <h5 class="mb-1">${title}</h5>
-                            </div>
-                            <p class="mb-1">${description}</p>
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-dark"> <i class="bi-check-square-fill"></i> Completed</button>
-                                <button type="button" class="btn btn-dark"> <i class="bi-pencil-square"></i> Edit</button>
-                                <button type="button" class="btn btn-dark"> <i class="bi-trash-fill"></i> Delete</button>
-                            </div>
-                        </a>
+                        <div  class="list-group-item list-group-item-action rounded-0" aria-current="true">
+                                    <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1">${title}</h5>
+                                    </div>
+                                    <p class="mb-1">${description}</p>
+                                    <div class="btn-group">
+                                    <button type="button" value="${data.id}" class="btn btn-dark complete-btn"> <i class="bi-check-square-fill"></i> Completed</button>
+                                    <button type="button" value="${data.id}" class="btn btn-dark edit-btn"> <i class="bi-pencil-square"></i> Edit</button>
+                                    <button type="button" value="${data.id}" class="btn btn-dark delete-btn"> <i class="bi-trash-fill"></i> Delete</button>
+                                    </div>
+                                </div>
                         `;
 
                         // Append the HTML to the element with id "task-list"
@@ -131,7 +145,7 @@
                         console.error('Error creating task: ' + error.responseText);
                     },
             });
-        }
+            }
 
             // Function to update a task's status
             function updateTaskStatus(taskId, newStatus) {
