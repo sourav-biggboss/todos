@@ -4,7 +4,16 @@
 
 1) Laravel
 2) MySQL 
+3) JavaScript
 
+## Setup Instaltion
+
+1) run in CLI `
+        cp .env.example .env 
+        php artisan serve
+        php artisan migrate
+        php artisan key generate
+    `
 
 ## About This Application
 
