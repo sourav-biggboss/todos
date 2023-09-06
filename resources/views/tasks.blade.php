@@ -27,11 +27,11 @@
 
         <div class="row mt-3">
             <div class="col-sm-6">
-                <form id="todo-form"  class="needs-validation" novalidate>
+                <div id="todo-form" action="#" class="needs-validation" novalidate>
                     <!-- Task Title -->
                     <div class="form-group">
                         <label for="task">Task Title:</label>
-                        <input type="text" class="form-control rounded-0" id="task" name="task" required>
+                        <input type="text" class="form-control rounded-0" id="title" name="task" required>
                         <div class="invalid-feedback rounded-0">
                             Please enter a Task Title.
                         </div>
@@ -40,12 +40,12 @@
                     <!-- description Notes -->
                     <div class="form-group mt-2">
                         <label for="notes">Task Description:</label>
-                        <textarea class="form-control rounded-0" id="notes" name="notes" rows="4"></textarea>
+                        <textarea class="form-control rounded-0" id="description" name="notes" rows="4"></textarea>
                     </div>
         
                     <!-- Submit Button -->
-                    <button type="submit" class="btn btn-dark rounded-0 mt-3">Add Task</button>
-                </form>
+                    <button type="submit" id="todo-form-btn" class="btn btn-dark rounded-0 mt-3">Add Task</button>
+                </div>
             </div>
             <div class="col-sm-6">
                 <div class="container" style="margin-top: 10px;">
@@ -98,28 +98,73 @@
 
     <script>
         $(document).ready(function() {
-            $("#todo-form").submit(function(event) {
-                event.preventDefault(); // Prevent the default form submission
 
-                // Get form data
-                var formData = $(this).serialize();
-
-                // Send AJAX request
-                $.ajax({
-                    type: "POST", // or "GET" depending on your server-side script
-                    url: "your_server_script.php", // Replace with the actual URL of your server-side script
-                    data: formData,
-                    success: function(response) {
-                        // Handle the response from the server (e.g., update the task list)
-                        alert("Task added successfully!");
-                        // You can add code here to update the task list or perform other actions.
-                    },
-                    error: function(xhr, status, error) {
-                        // Handle errors (e.g., display an error message)
-                        console.error("Error: " + error);
-                    }
-                });
+            $("#todo-form-btn").click(function(event) {
+                createTask();
             });
+           // Function to create a new task
+        function createTask() {
+            const title = $('#title').val();
+            const description = $('#description').val();
+
+            $.ajax({
+                    type: 'POST',
+                    url: '/api/tasks',
+                    data: {
+                        title: title,
+                        description: description,
+                        _token: $('meta[name="csrf-token"]').attr('content'), // Include CSRF token
+                    },
+                    success: function (data) {
+                        // Handle success, e.g., show a success message or update the task list
+                        console.log('Task created successfully');
+                    },
+                    error: function (error) {
+                        // Handle error, e.g., display validation errors
+                        console.error('Error creating task: ' + error.responseText);
+                    },
+            });
+        }
+
+            // Function to update a task's status
+            function updateTaskStatus(taskId, newStatus) {
+                $.ajax({
+                    type: 'PUT',
+                    url: `/api/tasks/${taskId}`,
+                    data: {
+                        status: newStatus,
+                        _token: $('meta[name="csrf-token"]').attr('content'), // Include CSRF token
+                    },
+                    success: function (data) {
+                        // Handle success, e.g., show a success message or update the task's status
+                        console.log('Task status updated successfully');
+                    },
+                    error: function (error) {
+                        // Handle error, e.g., display error message
+                        console.error('Error updating task status: ' + error.responseText);
+                    },
+                });
+            }
+
+            // Function to delete a task
+            function deleteTask(taskId) {
+                $.ajax({
+                    type: 'DELETE',
+                    url: `/api/tasks/${taskId}`,
+                    data: {
+                        _token: $('meta[name="csrf-token"]').attr('content'), // Include CSRF token
+                    },
+                    success: function (data) {
+                        // Handle success, e.g., remove the task from the list
+                        console.log('Task deleted successfully');
+                    },
+                    error: function (error) {
+                        // Handle error, e.g., display error message
+                        console.error('Error deleting task: ' + error.responseText);
+                    },
+                });
+            }
+
         });
     </script>
     
