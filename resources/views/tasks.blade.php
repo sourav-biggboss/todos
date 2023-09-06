@@ -63,7 +63,7 @@
                     <div class="tab-content">
                       <div class="tab-pane mt-2 active" id="msg">
                         
-                        <div class="list-group">
+                        <div class="list-group" id="task-list">
                             @foreach($taskData as $task)
                                 <a href="#" class="list-group-item list-group-item-action rounded-0" aria-current="true">
                                     <div class="d-flex w-100 justify-content-between">
@@ -108,6 +108,22 @@
                     },
                     success: function (data) {
                         // Handle success, e.g., show a success message or update the task list
+                        var taskHtml = `
+                        <a href="#" class="list-group-item list-group-item-action rounded-0" aria-current="true">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1">${title}</h5>
+                            </div>
+                            <p class="mb-1">${description}</p>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-dark"> <i class="bi-check-square-fill"></i> Completed</button>
+                                <button type="button" class="btn btn-dark"> <i class="bi-pencil-square"></i> Edit</button>
+                                <button type="button" class="btn btn-dark"> <i class="bi-trash-fill"></i> Delete</button>
+                            </div>
+                        </a>
+                        `;
+
+                        // Append the HTML to the element with id "task-list"
+                        $("#task-list").append(taskHtml);
                         console.log('Task created successfully');
                     },
                     error: function (error) {
