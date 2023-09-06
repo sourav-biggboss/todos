@@ -80,7 +80,23 @@
                         </div>
 
                       </div>
-                      <div class="tab-pane container fade" id="pro">This is a profile tab.</div>                    
+                      <div class="tab-pane mt-2 fade" id="pro">
+                        
+                      <div class="list-group" id="task-list-done">
+                            @foreach($taskDataDone as $taskdone)
+                                <div  class="list-group-item list-group-item-action rounded-0" aria-current="true">
+                                    <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1">{{$taskdone->title}}</h5>
+                                    </div>
+                                    <p class="mb-1">{{$taskdone->description}}</p>
+                                    <div class="btn-group">
+                                    <button type="button" value="{{$taskdone->id}}" class="btn btn-dark edit-btn"> <i class="bi-pencil-square"></i> Edit</button>
+                                    <button type="button" value="{{$taskdone->id}}" class="btn btn-dark delete-btn"> <i class="bi-trash-fill"></i> Delete</button>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                      </div>                    
                     </div>
                 </div>
             </div>
@@ -91,7 +107,8 @@
         $(document).ready(function() {
 
             $(".complete-btn").click(function(event) {
-                // updateTaskStatus();
+                updateTaskStatus(event.target.value,'Completed');
+                event.target.parentNode.parentNode.remove();
             });
 
             $(".edit-btn").click(function(event) {
@@ -157,8 +174,23 @@
                         _token: $('meta[name="csrf-token"]').attr('content'), // Include CSRF token
                     },
                     success: function (data) {
+                        console.log(data);
                         // Handle success, e.g., show a success message or update the task's status
-                        console.log('Task status updated successfully');
+                        var taskHtml = `
+                        <div  class="list-group-item list-group-item-action rounded-0" aria-current="true">
+                                    <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1">${data.data.title}</h5>
+                                    </div>
+                                    <p class="mb-1">${data.data.description}</p>
+                                    <div class="btn-group">
+                                    <button type="button" value="${taskId}" class="btn btn-dark edit-btn"> <i class="bi-pencil-square"></i> Edit</button>
+                                    <button type="button" value="${taskId}" class="btn btn-dark delete-btn"> <i class="bi-trash-fill"></i> Delete</button>
+                                    </div>
+                                </div>
+                        `;
+
+                        // Append the HTML to the element with id "task-list"
+                        $("#task-list-done").append(taskHtml);
                     },
                     error: function (error) {
                         // Handle error, e.g., display error message

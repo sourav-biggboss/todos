@@ -46,21 +46,23 @@ class TaskController extends Controller
 
         // Validate the incoming request data
         $request->validate([
-            'title' => 'required|max:255',
-            'description' => 'required',
+            'title' => 'max:255',
             'status' => 'in:Pending,Completed', // Define allowed statuses
         ]);
 
         // Update the task properties
+        if($request->input('title'))
         $task->title = $request->input('title');
+        if($request->input('description'))
         $task->description = $request->input('description');
+        if($request->input('status'))
         $task->status = $request->input('status');
 
         // Save the updated task to the database
         $task->save();
 
         // Optionally, return a response to indicate success
-        return response()->json(['message' => 'Task updated successfully'], 200);
+        return response()->json(['data' => $task], 200);
     }
 
     public function destroy($id)

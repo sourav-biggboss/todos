@@ -16,7 +16,8 @@ use App\Models\Task;
 
 Route::get('/', function () {
 
-    $taskData = Task::all();
+    $taskData = Task::where('status','!=','Completed')->get();
+    $taskDataDone = Task::where('status','Completed')->get();
     
-    return view('tasks',['taskData'=>$taskData ]);
+    return view('tasks',['taskData'=>$taskData,'taskDataDone'=>$taskDataDone  ]);
 });
