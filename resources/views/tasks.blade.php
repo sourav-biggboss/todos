@@ -64,17 +64,19 @@
                       <div class="tab-pane mt-2 active" id="msg">
                         
                         <div class="list-group">
-                            <a href="#" class="list-group-item list-group-item-action rounded-0" aria-current="true">
-                              <div class="d-flex w-100 justify-content-between">
-                                <h5 class="mb-1">Task Title lor</h5>
-                              </div>
-                              <p class="mb-1">Task description. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nostrum ab eaque qui earum aliquid animi fugit enim quaerat nihil? Rerum delectus autem dignissimos? Architecto voluptas minus delectus iusto repudiandae dignissimos!</p>
-                              <div class="btn-group">
-                                <button type="button" class="btn btn-dark"> <i class="bi-check-square-fill"></i> Completed</button>
-                                <button type="button" class="btn btn-dark"> <i class="bi-pencil-square"></i> Edit</button>
-                                <button type="button" class="btn btn-dark"> <i class="bi-trash-fill"></i> Delete</button>
-                              </div>
-                            </a>
+                            @foreach($taskData as $task)
+                                <a href="#" class="list-group-item list-group-item-action rounded-0" aria-current="true">
+                                    <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1">{{$task->title}}</h5>
+                                    </div>
+                                    <p class="mb-1">{{$task->description}}</p>
+                                    <div class="btn-group">
+                                    <button type="button" class="btn btn-dark"> <i class="bi-check-square-fill"></i> Completed</button>
+                                    <button type="button" class="btn btn-dark"> <i class="bi-pencil-square"></i> Edit</button>
+                                    <button type="button" class="btn btn-dark"> <i class="bi-trash-fill"></i> Delete</button>
+                                    </div>
+                                </a>
+                            @endforeach
                             <a href="#" class="list-group-item list-group-item-action rounded-0">
                               <div class="d-flex w-100 justify-content-between">
                                 <h5 class="mb-1">Task Title</h5>
