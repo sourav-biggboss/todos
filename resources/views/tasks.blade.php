@@ -44,7 +44,7 @@
                     </div>
         
                     <!-- Submit Button -->
-                    <button type="submit" id="todo-form-btn" class="btn btn-dark rounded-0 mt-3">Add Task</button>
+                    <button type="submit" id="todo-form-btn" onclick="createTask()" class="btn btn-dark rounded-0 mt-3">Add Task</button>
                 </div>
             </div>
             <div class="col-sm-6">
@@ -71,9 +71,9 @@
                                     </div>
                                     <p class="mb-1">{{$task->description}}</p>
                                     <div class="btn-group">
-                                    <button type="button" value="{{$task->id}}" class="btn btn-dark complete-btn"> <i class="bi-check-square-fill"></i> Completed</button>
-                                    <button type="button" value="{{$task->id}}" class="btn btn-dark edit-btn"> <i class="bi-pencil-square"></i> Edit</button>
-                                    <button type="button" value="{{$task->id}}" class="btn btn-dark delete-btn"> <i class="bi-trash-fill"></i> Delete</button>
+                                    <button type="button" value="{{$task->id}}" onclick="completeBtn()" class="btn btn-dark complete-btn"> <i class="bi-check-square-fill"></i> Completed</button>
+                                    <button type="button" value="{{$task->id}}" onclick="editBtn()" class="btn btn-dark edit-btn"> <i class="bi-pencil-square"></i> Edit</button>
+                                    <button type="button" value="{{$task->id}}" onclick="deleteBtn()" class="btn btn-dark delete-btn"> <i class="bi-trash-fill"></i> Delete</button>
                                     </div>
                                 </div>
                             @endforeach
@@ -90,8 +90,8 @@
                                     </div>
                                     <p class="mb-1">{{$taskdone->description}}</p>
                                     <div class="btn-group">
-                                    <button type="button" value="{{$taskdone->id}}" class="btn btn-dark edit-btn"> <i class="bi-pencil-square"></i> Edit</button>
-                                    <button type="button" value="{{$taskdone->id}}" class="btn btn-dark delete-btn"> <i class="bi-trash-fill"></i> Delete</button>
+                                    <button type="button" value="{{$taskdone->id}}" onclick="editBtn()"  class="btn btn-dark edit-btn"> <i class="bi-pencil-square"></i> Edit</button>
+                                    <button type="button" value="{{$taskdone->id}}"  onclick="deleteBtn()"  class="btn btn-dark delete-btn"> <i class="bi-trash-fill"></i> Delete</button>
                                     </div>
                                 </div>
                             @endforeach
@@ -104,121 +104,131 @@
     </div>
 
     <script>
-        $(document).ready(function() {
+        // $(document).ready(function() {
+            // $(".edit-btn").click(function(event) {
+            //     // editTask();
+            // });
+        // });
 
-            $(".complete-btn").click(function(event) {
-                updateTaskStatus(event.target.value,'Completed');
-                event.target.parentNode.parentNode.remove();
-            });
+        function completeBtn (){
+            updateTaskStatus(event.target.value,'Completed');
+            event.target.parentNode.parentNode.remove();
+        };
 
-            $(".edit-btn").click(function(event) {
-                // editTask();
-            });
 
-            $(".delete-btn").click(function(event) {
-                console.log('dsad');
-                deleteTask(event.target.value);
-                event.target.parentNode.parentNode.remove();
-            });
+        function deleteBtn (){
+            deleteTask(event.target.value);
+            event.target.parentNode.parentNode.remove();
+        };
+;
+        // Function to create a new task
+        function createTask() {
+            const title = document.getElementById('title').value;
+            const description = document.getElementById('description').value;
 
-            $("#todo-form-btn").click(function(event) {
-                createTask();
-            });
-            // Function to create a new task
-            function createTask() {
-            const title = $('#title').val();
-            const description = $('#description').val();
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', '/api/tasks', true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
 
-            $.ajax({
-                    type: 'POST',
-                    url: '/api/tasks',
-                    data: {
-                        title: title,
-                        description: description,
-                        _token: $('meta[name="csrf-token"]').attr('content'), // Include CSRF token
-                    },
-                    success: function (data) {
-                        // Handle success, e.g., show a success message or update the task list
-                        var taskHtml = `
-                        <div  class="list-group-item list-group-item-action rounded-0" aria-current="true">
-                                    <div class="d-flex w-100 justify-content-between">
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        const data = JSON.parse(xhr.responseText);
+                        const taskHtml = `
+                            <div  class="list-group-item list-group-item-action rounded-0" aria-current="true">
+                                <div class="d-flex w-100 justify-content-between">
                                     <h5 class="mb-1">${title}</h5>
-                                    </div>
-                                    <p class="mb-1">${description}</p>
-                                    <div class="btn-group">
-                                    <button type="button" value="${data.id}" class="btn btn-dark complete-btn"> <i class="bi-check-square-fill"></i> Completed</button>
-                                    <button type="button" value="${data.id}" class="btn btn-dark edit-btn"> <i class="bi-pencil-square"></i> Edit</button>
-                                    <button type="button" value="${data.id}" class="btn btn-dark delete-btn"> <i class="bi-trash-fill"></i> Delete</button>
-                                    </div>
                                 </div>
+                                <p class="mb-1">${description}</p>
+                                <div class="btn-group">
+                                    <button type="button" value="${data.id}" onclick="completeBtn()" class="btn btn-dark complete-btn"> <i class="bi-check-square-fill"></i> Completed</button>
+                                    <button type="button" value="${data.id}" onclick="editBtn()" class="btn btn-dark edit-btn"> <i class="bi-pencil-square"></i> Edit</button>
+                                    <button type="button" value="${data.id}" onclick="deleteBtn()"  class="btn btn-dark delete-btn"> <i class="bi-trash-fill"></i> Delete</button>
+                                </div>
+                            </div>
                         `;
 
                         // Append the HTML to the element with id "task-list"
-                        $("#task-list").append(taskHtml);
+                        document.getElementById('task-list').insertAdjacentHTML('beforeend', taskHtml);
                         console.log('Task created successfully');
-                    },
-                    error: function (error) {
+                    } else {
                         // Handle error, e.g., display validation errors
-                        console.error('Error creating task: ' + error.responseText);
-                    },
-            });
-            }
+                        console.error('Error creating task: ' + xhr.responseText);
+                    }
+                }
+            };
 
-            // Function to update a task's status
-            function updateTaskStatus(taskId, newStatus) {
-                $.ajax({
-                    type: 'PUT',
-                    url: `/api/tasks/${taskId}`,
-                    data: {
-                        status: newStatus,
-                        _token: $('meta[name="csrf-token"]').attr('content'), // Include CSRF token
-                    },
-                    success: function (data) {
-                        console.log(data);
-                        // Handle success, e.g., show a success message or update the task's status
-                        var taskHtml = `
-                        <div  class="list-group-item list-group-item-action rounded-0" aria-current="true">
-                                    <div class="d-flex w-100 justify-content-between">
+            const data = {
+                title: title,
+                description: description
+            };
+
+            xhr.send(JSON.stringify(data));
+        }
+
+        // Function to update a task's status
+        function updateTaskStatus(taskId, newStatus) {
+
+            const xhr = new XMLHttpRequest();
+            xhr.open('PUT', `/api/tasks/${taskId}`, true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        const data = JSON.parse(xhr.responseText);
+                        const taskHtml = `
+                            <div  class="list-group-item list-group-item-action rounded-0" aria-current="true">
+                                <div class="d-flex w-100 justify-content-between">
                                     <h5 class="mb-1">${data.data.title}</h5>
-                                    </div>
-                                    <p class="mb-1">${data.data.description}</p>
-                                    <div class="btn-group">
-                                    <button type="button" value="${taskId}" class="btn btn-dark edit-btn"> <i class="bi-pencil-square"></i> Edit</button>
-                                    <button type="button" value="${taskId}" class="btn btn-dark delete-btn"> <i class="bi-trash-fill"></i> Delete</button>
-                                    </div>
                                 </div>
+                                <p class="mb-1">${data.data.description}</p>
+                                <div class="btn-group">
+                                    <button type="button" value="${taskId}" onclick="editBtn()" class="btn btn-dark edit-btn"> <i class="bi-pencil-square"></i> Edit</button>
+                                    <button type="button" value="${taskId}" onclick="deleteBtn()" class="btn btn-dark delete-btn"> <i class="bi-trash-fill"></i> Delete</button>
+                                </div>
+                            </div>
                         `;
 
-                        // Append the HTML to the element with id "task-list"
-                        $("#task-list-done").append(taskHtml);
-                    },
-                    error: function (error) {
+                        // Append the HTML to the element with id "task-list-done"
+                        document.getElementById('task-list-done').insertAdjacentHTML('beforeend', taskHtml);
+                    } else {
                         // Handle error, e.g., display error message
-                        console.error('Error updating task status: ' + error.responseText);
-                    },
-                });
-            }
+                        console.error('Error updating task status: ' + xhr.responseText);
+                    }
+                }
+            };
 
-            // Function to delete a task
-            function deleteTask(taskId) {
-                $.ajax({
-                    type: 'DELETE',
-                    url: `/api/tasks/${taskId}`,
-                    data: {
-                        _token: $('meta[name="csrf-token"]').attr('content'), // Include CSRF token
-                    },
-                    success: function (data) {
+            const data = {
+                status: newStatus,
+                // _token: csrfToken,
+            };
+
+            xhr.send(JSON.stringify(data));
+        }
+
+        // Function to delete a task
+        function deleteTask(taskId) {
+
+            const xhr = new XMLHttpRequest();
+            xhr.open('DELETE', `/api/tasks/${taskId}`, true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
                         // Handle success, e.g., remove the task from the list
                         console.log('Task deleted successfully');
-                    },
-                    error: function (error) {
+                    } else {
                         // Handle error, e.g., display error message
-                        console.error('Error deleting task: ' + error.responseText);
-                    },
-                });
-            }
+                        console.error('Error deleting task: ' + xhr.responseText);
+                    }
+                }
+            };
 
-        });
+            xhr.send();
+        }
+
     </script>
     
 
